@@ -15,11 +15,10 @@ CSI relies on a lot of amazing libraries written by smart people. Please install
 - `h5py`
 - `okada4py`
 
-For everything except `okada4py`, you can use `conda` (or similarly `pip`):
+For everything except `okada4py`, you can use `conda` (or similarly `pip`). If you have different virtual environments, make sure to activate the correct one first.
 
 ```bash
-conda create --name csi_env python=3 numpy scipy matplotlib cartopy pyproj h5py
-conda activate csi_env
+conda install python=3 numpy scipy matplotlib cartopy pyproj h5py
 ```
 
 ### Installing `okada4py`
