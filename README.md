@@ -14,6 +14,7 @@ CSI relies on a lot of amazing libraries written by smart people. Please install
 - `pyproj`
 - `h5py`
 - `okada4py`
+  - needs `gcc` to install
 
 For everything except `okada4py`, you can use `conda` (or similarly `pip`). If you have different virtual environments, make sure to activate the correct one first.
 
@@ -25,14 +26,22 @@ conda install python=3 numpy scipy matplotlib cartopy pyproj h5py
 
 *This is a slight adaptation of <https://github.com/jolivetr/okada4py>.*
 
-First, clone the repository:
+First, make sure that you have `gcc` installed:
+
+```bash
+which gcc
+```
+
+If it returns a path, `gcc` is installed on your system. Otherwise, you'll have to install it through a package manager like `apt`, `homebrew`, `macports`, `cygwin`, `mingw` etc.
+
+Then, clone the `okada4py` repository:
 
 ```bash
 cd my_downloads_folder/
 git clone https://github.com/jolivetr/okada4py.git
 ```
 
-Then use `pip` to compile the needed files and install them into your current Python installation (or active `conda` environment):
+Finally, use `pip` to compile the needed files and install them into your current Python installation (or active `conda` environment):
 
 ```bash
 cd okada4py/
