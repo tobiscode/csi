@@ -1,6 +1,3 @@
-# csi
-Classic Slip Inversion
+# Classic Slip Inversion
 
-For a manual, installation instructions and some examples, please visit: http://www.geologie.ens.fr/~jolivet/csi
-
-
+For a manual, installation instructions and some examples, please visit: <https://www.geologie.ens.fr/~jolivet/csi>.
