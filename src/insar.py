@@ -465,7 +465,7 @@ class insar(SourceInv):
                 self.inchd2los(incidence, heading, origin='binaryfloat')
                 self.los = self.los[::downsample,:]
             elif type(incidence) in (float, np.float):
-                self.inchd2los(incidence, heading, origin='float')
+                self.inchd2los(incidence, heading, origin='float', los_len=lon.shape[0])
             elif type(incidence) is str:
                 self.inchd2los(incidence, heading, origin='binary')
                 self.los = self.los[::downsample,:]
@@ -475,7 +475,7 @@ class insar(SourceInv):
                         dtype=dtype)
                 self.los = self.los[::downsample,:]
             elif type(incidence) in (float, np.float):
-                self.incaz2los(incidence, azimuth, origin='float')
+                self.incaz2los(incidence, azimuth, origin='float', los_len=lon.shape[0])
             elif type(incidence) is str:
                 self.incaz2los(incidence, azimuth, origin='binary',
                                 dtype=dtype)
@@ -585,7 +585,7 @@ class insar(SourceInv):
         # All done
         return
 
-    def incaz2los(self, incidence, azimuth, origin='onefloat', dtype=np.float32):
+    def incaz2los(self, incidence, azimuth, origin='onefloat', dtype=np.float32, los_len=None):
         '''
         From the incidence and the heading, defines the LOS vector.
 
@@ -595,11 +595,12 @@ class insar(SourceInv):
 
         Kwargs:
             * origin    : What are these numbers
-                - onefloat      : One number
-                - grd           : grd files
-                - binary        : Binary files
-                - binaryfloat   : Arrays of float
+                - onefloat, float : One number
+                - grd             : grd files
+                - binary          : Binary files
+                - binaryfloat     : Arrays of float
             * dtype     : Data type (default is np.float32)
+            * los_len   : If origin is 'binaryfloat', 'onefloat', or 'float', LOS output array length
 
         Returns:
             * None
@@ -627,9 +628,12 @@ class insar(SourceInv):
             incidence = np.fromfile(incidence, dtype=dtype)
             azimuth = np.fromfile(azimuth, dtype=dtype)
             self.origininchd = origin
-        elif origin in ('binaryfloat'):
-            self.origininchd = origin
+        elif origin in ('binaryfloat', 'onefloat', 'float'):
+            pass
+        else:
+            raise NotImplementedError(f"Unrecognized origin: {origin}")
 
+        self.origininchd = origin
         self.Incidence = incidence
         self.Azimuth = azimuth
 
@@ -645,8 +649,13 @@ class insar(SourceInv):
         # Store it
         if origin in ('grd', 'GRD', 'binary', 'bin', 'binaryfloat'):
             self.los = np.ones((alpha.shape[0],3))
-        else:
+        elif self.lon is not None:
             self.los = np.ones((self.lon.shape[0],3))
+        elif los_len is not None:
+            self.los = np.ones((los_len,3))
+        else:
+            raise ValueError(f"If origin is 'binaryfloat', 'onefloat', or 'float', "
+                              "need either self.lon to be set, or a LOS output array length 'los_len' to be passed.")
         self.los[:,0] *= Se
         self.los[:,1] *= Sn
         self.los[:,2] *= Su
@@ -654,7 +663,7 @@ class insar(SourceInv):
         # all done
         return
 
-    def inchd2los(self, incidence, heading, origin='onefloat'):
+    def inchd2los(self, incidence, heading, origin='onefloat', los_len=None):
         '''
         From the incidence and the heading, defines the LOS vector.
 
@@ -664,10 +673,11 @@ class insar(SourceInv):
 
         Kwargs:
             * origin    : What are these numbers
-                - onefloat      : One number
-                - grd           : grd files
-                - binary        : Binary files
-                - binaryfloat   : Arrays of float
+                - onefloat, float : One number
+                - grd             : grd files
+                - binary          : Binary files
+                - binaryfloat     : Arrays of float
+            * los_len   : If origin is 'binaryfloat', 'onefloat', or 'float', LOS output array length
 
         Returns:
             * None
@@ -689,14 +699,15 @@ class insar(SourceInv):
                 fheading = netcdf.netcdf_file(heading)
             incidence = np.array(fincidence.variables['z'][:]).flatten()
             heading = np.array(fheading.variables['z'][:]).flatten()
-            self.origininchd = origin
         elif origin in ('binary', 'bin'):
             incidence = np.fromfile(incidence, dtype=np.float32)
             heading = np.fromfile(heading, dtype=np.float32)
-            self.origininchd = origin
-        elif origin in ('binaryfloat'):
-            self.origininchd = origin
+        elif origin in ('binaryfloat', 'onefloat', 'float'):
+            pass
+        else:
+            raise NotImplementedError(f"Unrecognized origin: {origin}")
 
+        self.origininchd = origin
         self.Incidence = incidence
         self.Heading = heading
 
@@ -712,8 +723,13 @@ class insar(SourceInv):
         # Store it
         if origin in ('grd', 'GRD', 'binary', 'bin', 'binaryfloat'):
             self.los = np.ones((alpha.shape[0],3))
-        else:
+        elif self.lon is not None:
             self.los = np.ones((self.lon.shape[0],3))
+        elif los_len is not None:
+            self.los = np.ones((los_len,3))
+        else:
+            raise ValueError(f"If origin is 'binaryfloat', 'onefloat', or 'float', "
+                              "need either self.lon to be set, or a LOS output array length 'los_len' to be passed.")
         self.los[:,0] *= Se
         self.los[:,1] *= Sn
         self.los[:,2] *= Su
