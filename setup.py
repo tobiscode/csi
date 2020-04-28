@@ -17,7 +17,7 @@ if __name__ == "__main__":
           author_email='romain.jolivet@ens.fr',
           url='https://www.geologie.ens.fr/~jolivet/csi/',
           download_url='https://github.com/jolivetr/csi',
-          python_requires='=3',
+          python_requires='>=3',
           install_requires=['numpy',
                             'scipy',
                             'matplotlib',
