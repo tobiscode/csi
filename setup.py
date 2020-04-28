@@ -3,23 +3,6 @@
 # imports
 from os import path
 from setuptools import setup
-from setuptools.command.install import install
-
-
-# define a custom installer that first checks if okada4py is installed
-class CustomInstallCommand(install):
-    """Customized setuptools install command - prints a friendly greeting."""
-    def run(self):
-        try:
-            import okada4py
-            print(f"'okada4py' found at: {okada4py.__file__}")
-        except ModuleNotFoundError:
-            print("Could not import the 'okada4py' Python module, which is "
-                  "a prerequisite for CSI. Please install it before proceeding, "
-                  "and/or check for more debugging options by running Python and "
-                  "trying to import it yourself.")
-            raise
-        install.run(self)
 
 
 if __name__ == "__main__":
@@ -34,9 +17,9 @@ if __name__ == "__main__":
           author_email='romain.jolivet@ens.fr',
           url='https://www.geologie.ens.fr/~jolivet/csi/',
           download_url='https://github.com/jolivetr/csi',
+          install_requires='okada4py @ git+https://github.com/jolivetr/okada4py.git',
           package_dir={'csi': 'src'},
           packages=['csi'],
-          cmdclass={'install': CustomInstallCommand},
           description='Classic Slip Inversion',
           long_description=long_description,
           long_description_content_type='text/markdown',
